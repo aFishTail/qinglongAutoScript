@@ -13,6 +13,7 @@ const scheduledoctorlistUrl =
 
 //签到列表
 async function getScheduledoctorList(scheduleDate) {
+  const messages = []
   const { token } = getRefreshToken()
   if (!token) {
     throw new Error('token 获取失败')
@@ -48,10 +49,11 @@ async function getScheduledoctorList(scheduleDate) {
     console.log('获取医生排班异常')
   }
   data.data.doctorList.forEach(d => {
-    console.log(
-      `【科室】：${d.deptName}，【号】：${d.doctorName}，【余号】：${d.leftSource} `
-    )
+    const msg = `【日期】:${scheduleDate} 【科室】：${d.deptName}，【号】：${d.doctorName}，【余号】：${d.leftSource} `
+    console.log(msg)
+    messages.push(msg)
   })
+  notify.send(messages.join('/n'))
 }
 
 // 获取环境变量
