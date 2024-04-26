@@ -14,7 +14,7 @@ const scheduledoctorlistUrl =
 //签到列表
 async function getScheduledoctorList(scheduleDate) {
   const messages = []
-  const { token } = getRefreshToken()
+  const { token } = await getRefreshToken()
   if (!token) {
     throw new Error('token 获取失败')
   }
@@ -35,7 +35,7 @@ async function getScheduledoctorList(scheduleDate) {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: 'https://hlwyyapi.wuaitec.com/api/register/scheduledoctorlist?_route=h320125&',
+    url: scheduledoctorlistUrl,
     headers: {
       'has-id': '320125',
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -47,41 +47,43 @@ async function getScheduledoctorList(scheduleDate) {
   const { data } = res
   if (data.code !== 0) {
     console.log('获取医生排班异常')
+    process.exit(1)
   }
   data.data.doctorList.forEach(d => {
     const msg = `【日期】:${scheduleDate} 【科室】：${d.deptName}，【号】：${d.doctorName}，【余号】：${d.leftSource} `
     console.log(msg)
     messages.push(msg)
   })
-  notify.send(messages.join('/n'))
+  notify.sendNotify(messages.join('/n'))
 }
 
 // 获取环境变量
 async function getRefreshToken() {
-  let instance = null
-  try {
-    instance = await initInstance()
-  } catch (e) {}
+  // let instance = null
+  // try {
+  //   instance = await initInstance()
+  // } catch (e) {}
 
   let token = process.env.nkyyToken
-  try {
-    if (instance) token = await getEnv(instance, 'nkyyToken')
-  } catch (e) {}
+  // try {
+  //   if (instance) token = await getEnv(instance, 'nkyyToken')
+  // } catch (e) {}
 
   return {
-    instance,
+    // instance,
     token
   }
 }
 
 async function main() {
-  const messages = []
   const now = dayjs()
   for (let i = 0; i < 7; i++) {
     const date = now.add(i, 'day').format('YYYY-MM-DD')
     try {
       await getScheduledoctorList(date)
-    } catch (error) {}
+    } catch (error) {
+      console.log('error', error)
+    }
   }
 }
 
