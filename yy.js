@@ -61,7 +61,7 @@ async function getRefreshToken() {
     instance = await initInstance()
   } catch (e) {}
 
-  let nkyyToken = process.env.nkyyToken
+  let token = process.env.nkyyToken
   try {
     if (instance) token = await getEnv(instance, 'nkyyToken')
   } catch (e) {}
