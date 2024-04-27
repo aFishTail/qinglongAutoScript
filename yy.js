@@ -49,12 +49,20 @@ async function getScheduledoctorList(scheduleDate) {
     console.log('获取医生排班异常')
     process.exit(1)
   }
-  data.data.doctorList.forEach(d => {
-    const msg = `【日期】:${scheduleDate} 【科室】：${d.deptName}，【号】：${d.doctorName}，【余号】：${d.leftSource} `
+  console.log('data', data)
+  const doctorList = data.data.doctorList
+  if (!doctorList || doctorList.length === 0) {
+    const msg = `【日期】:${scheduleDate} 无排班`
     console.log(msg)
     messages.push(msg)
-  })
-  notify.sendNotify(messages.join('/n'))
+  } else {
+    data.data.doctorList.forEach(d => {
+      const msg = `【日期】:${scheduleDate} 【科室】：${d.deptName}，【号】：${d.doctorName}，【余号】：${d.leftSource} `
+      console.log(msg)
+      messages.push(msg)
+    })
+  }
+  return messages
 }
 
 // 获取环境变量
@@ -64,7 +72,7 @@ async function getRefreshToken() {
   //   instance = await initInstance()
   // } catch (e) {}
 
-  let token = process.env.nkyyToken
+  let token = process.env.nkyyToken || '1714186734958-2B4B63AF24AEED821480E6'
   // try {
   //   if (instance) token = await getEnv(instance, 'nkyyToken')
   // } catch (e) {}
@@ -76,11 +84,15 @@ async function getRefreshToken() {
 }
 
 async function main() {
+  const messages = []
   const now = dayjs()
   for (let i = 0; i < 7; i++) {
     const date = now.add(i, 'day').format('YYYY-MM-DD')
     try {
-      await getScheduledoctorList(date)
+      const msgs = await getScheduledoctorList(date)
+      messages.push(...msgs)
+      console.log(messages)
+      notify.sendNotify(messages.join('/n'))
     } catch (error) {
       console.log('error', error)
     }
