@@ -98,11 +98,11 @@ async function main() {
       const msgs = await getScheduledoctorList(date)
       messages.push(...msgs)
       console.log(messages)
-      notify.sendNotify('nk', messages.join('\n'))
     } catch (error) {
       console.log('error', error)
     }
   }
+  notify.sendNotify('nk', messages.join('\n'))
 }
 
 main()
