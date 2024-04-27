@@ -38,7 +38,13 @@ async function getScheduledoctorList(scheduleDate) {
     url: scheduledoctorlistUrl,
     headers: {
       'has-id': '320125',
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
+      referer:
+        'https://servicewechat.com/wx9adf4bd410073be5/11/page-frame.html',
+      'user-agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x6309092b) XWEB/8555',
+      client: 'patient',
+      'hc-src-hisid': '320125'
     },
     data: params
   }
